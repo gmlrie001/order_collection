@@ -1,4 +1,3 @@
-
 <div class="col-12 padding-0 shipping-options-list">
     <div class="row align-items-center">
 

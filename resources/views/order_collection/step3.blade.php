@@ -1,4 +1,4 @@
-@extends('layouts.sites.decofurn')
+@extends('templates.layouts.index')
 
 @push( 'pageHeaderScripts' )
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwbqZDZkfmonJqI3wao6QIlcwlmjJEtrE&callback=initMap"></script>
@@ -6,6 +6,28 @@
 
 @push( 'pageStyles' )
   <style id="delivery-collection-options">
+    .no-submit {
+      max-height: unset;
+      padding: 0 1rem!important;
+      max-width: 100% !important;
+      width: 100%;
+      text-align: left !important;
+    }
+    .address,
+    .trading-hours {
+      margin-bottom: 1.5rem !important;
+    }
+    address p, 
+    .trading-hours p, 
+    .trading-hours * p {
+      margin-top: 0 !important;
+      line-height: 1.25 !important;
+    }
+    input[type=submit] {
+      background-color: green;
+      color: white;
+    }
+
     :focus, 
     :active, 
     :hover {
@@ -92,44 +114,46 @@
   </style>
 @endpush
 
-@php $canContinue = !1; @endphp
+@php 
+  $canContinue = !1;
+  if ( in_array( env('APP_ENV'), ['local', 'development'] ) ) {
+    session()->put( 'basket.id', 274 );
+  } 
+@endphp
 
 @section('content')
 
 <div class="container mt-3">
     <div class="row">
         <div class="col-12 col-lg-9 custom-checkout-padding">
-          <div class="row">                
-              <div class="col-12 padding-0 text-center-sm px-4 px-lg-3">
-                @include( 'order_collection::step3_page_navigation' )
-              </div>
+            <div class="row">                
+                <div class="col-12 padding-0 text-center-sm px-4 px-lg-3">
+                    @include( 'order_collection::step3_page_navigation' )
 
-              <div class="col-12 padding-0 text-center-sm px-4 px-lg-3 shipping-options-block">
-                  <div class="row">
-
-                      @include( 'order_collection::options_header' )
-                      <form class="col-12 no-submit">
-                          <div class="row align-items-center">
-                              <div class="col-12 padding-0 shipping-options-list-options">
-                                  @if($order->collection_code == null)
-                                  {{-- DELIVERY/COURIER OPTS::: --}}
-                                    @include( 'order_collection::components.shipping_courier.options' )
-                                  {{-- DELIVERY/COURIER OPTS::: --}}
-                                  @elseif($order->collection_code != null)
-                                  {{-- COLLECTION POINTS::: --}}
-                                    @include( 'order_collection::components.collection.options' )
-                                  {{-- COLLECTION POINTS::: --}}
-                                  @endif
-                              </div>
-                          </div>
-                      </form>
-
-                  </div>
-              </div>
+                    <div class="col-12 padding-0 text-center-sm px-4 px-lg-3 shipping-options-block">
+                        <div class="row">
+                            @include( 'order_collection::options_header' )
+                            <form class="col-12 no-submit">
+                                <div class="row align-items-center">
+                                    <div class="col-12 padding-0 shipping-options-list-options">
+                                        @if($order->collection_code == null)
+                                        {{-- DELIVERY/COURIER OPTS::: --}}
+                                          @include( 'order_collection::components.shipping_courier.options' )
+                                        {{-- DELIVERY/COURIER OPTS::: --}}
+                                        @elseif($order->collection_code != null)
+                                        {{-- COLLECTION POINTS::: --}}
+                                          @include( 'order_collection::components.collection.options' )
+                                        {{-- COLLECTION POINTS::: --}}
+                                        @endif
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    @include( 'order_collection::components.product_assembly.options' )
+                </div>
           </div>
-          @include( 'order_collection::product_assembly.product_assembly' )
-        </div>
-        @include( 'order_collection::order_summary' )
+          @include( 'order_collection::order_summary' )
     </div>
 </div>
 
@@ -140,10 +164,10 @@
     var summaryAddr = document.querySelector('address.order-summary');
     var inputSubmit = document.querySelector('input[type*=submit][disabled]')
 
-    window.document.addEventListener('DOMContentLoaded', function() {
+    window.document.addEventListener('DOMContentLoaded', function()
+    {
       try {
         inputElems.forEach( elem => inputListeners( elem ) );
-
       } catch( err ) { console.warn( "\n" + err + "\n" ); }
 
       return;
@@ -151,7 +175,8 @@
 
     function inputListeners( elem )
     {
-      elem.addEventListener( 'change', function( evt ) {
+      elem.addEventListener( 'change', function( evt )
+      {
         var detailPrnt, tempElemSel, detailElm;
         var address, splitAddr, summaryAddress, pElem, paraAddress;
 
@@ -165,14 +190,12 @@
               if( ! detailElm.hasAttribute( 'open' ) ) { detailElm.setAttribute( 'open', '' ); }
               delete( detailElm, detailPrnt, tempElemSel );
             }
-
           } catch( err ) { console.warn( "\n" + err + "\n" ); }
 
           try {
             address        = this.dataset.address;
             splitAddr      = address.split( ", " );
             summaryAddress = splitAddr.join( ', \r\n' );
-
           } catch( err ) { console.warn( "\n" + err + "\n" ); }
 
           try {
@@ -180,13 +203,11 @@
               pElem.innerText = decodeURIComponent( summaryAddress );
               paraAddress = document.createElement( 'address' );
               paraAddress.appendChild( pElem );
-
           } catch( err ) { console.warn( "\n" + err + "\n" ); }
 
           if ( summaryAddr.children.length > 0 ) {
             try {
               summaryAddr.replaceChild( paraAddress, summaryAddr.firstElementChild  );
-
             } catch( err ) { console.error( "\n" + err + "\n" ); }
 
           } else {
@@ -196,7 +217,6 @@
 
         try {
           inputSubmit.removeAttribute('disabled');
-
         } catch( err ) { console.log( "\r\n" + err + "\r\n" ); }
 
         return;
@@ -366,7 +386,7 @@
     ->get();
   @endphp
 
-  @isset( $colOpts && count( $colOpts ) > 0 )
+  @if( NULL != $colOpts && count( $colOpts ) > 0 )
     {{-- // Initialize and add the map --}}
     <script id="store-gmaps">
       function initMap()
@@ -397,9 +417,9 @@
         @endforelse
       }
     </script>
-  @endisset
+  @endif
 @endpush
 
-@include( 'includes.pages.tab_open_check' )
+{{-- @include( 'includes.pages.tab_open_check' ) --}}
 
 @endsection

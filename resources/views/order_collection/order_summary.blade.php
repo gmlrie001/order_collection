@@ -5,15 +5,16 @@
 
             @php
               $subTotal = $order->subtotal;
+              $order    = $cart;
 
               /** Any Discounts Applied to the Order */
-              if($discount == 0){
+              if($cart->discount == 0){
                 $discountTotal = 0;
               } else {
-                if ( $discount_type == 0 ) {
-                  $discountTotal = $total_cost * ( $discount * 0.01 );
+                if ( $cart->discount_type == 0 ) {
+                  $discountTotal = $total_cost * ( $cart->discount * 0.01 );
                 } else {
-                  $discountTotal = $discount;
+                  $discountTotal = $cart->discount;
                 }
               }
               $subTotal = $subTotal - $discountTotal;
@@ -42,6 +43,8 @@
                 }
               }
               $subTotal += $assembly_costs;
+
+              $total_cost = $order->subtotal;
             @endphp
 
           @if($total_cost)
