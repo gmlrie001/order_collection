@@ -1,3 +1,20 @@
 #
+#__dev
+#_dev
+#_backup
+#*BU
+#*bu
+#*orig*
+
+*.zip
+*.gz
+*.bz2
+*.tar
 *.tar.gz
+*.tar.bz2
+*.tgz
+*.tbz2
+
+.*.swp
+/vendor
 
