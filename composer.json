@@ -1,0 +1,32 @@
+{
+  "name": "vault/order_collection",
+  "description": "OrderCollection module for website - this can be of the single page or listing-view pages form.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "gmlrie001",
+      "email": "dev2@monzamedia.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {},
+  "config": {
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Vault\\OrderCollection\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Vault\\OrderCollection\\OrderCollectionServiceProvider"
+      ],
+      "aliases": {
+        "OrderCollection": "Vault\\OrderCollection\\Facades\\OrderCollection"
+      }
+    }
+  }
+}
