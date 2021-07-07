@@ -4,6 +4,7 @@
       $colOpts = $collection_points;
       $counter = 0;
       $pointsOfCollection = $collection_points->groupBy( 'province' );
+      dd( __FILE__, __LINE__, get_defined_vars() );
     @endphp
 
     @forelse($pointsOfCollection as $key=>$collection_points )

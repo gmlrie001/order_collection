@@ -117,8 +117,10 @@
 @php 
   $canContinue = !1;
   if ( in_array( env('APP_ENV'), ['local', 'development'] ) ) {
-    session()->put( 'basket.id', 274 );
-  } 
+    session()->put( 'basket.id', 293 );
+  }
+  // $collection_points = $collection_options;
+  // dd( get_defined_vars() );
 @endphp
 
 @section('content')
@@ -133,6 +135,7 @@
                     <div class="col-12 padding-0 text-center-sm px-4 px-lg-3 shipping-options-block">
                         <div class="row">
                             @include( 'order_collection::options_header' )
+
                             <form class="col-12 no-submit">
                                 <div class="row align-items-center">
                                     <div class="col-12 padding-0 shipping-options-list-options">
@@ -150,9 +153,11 @@
                             </form>
                         </div>
                     </div>
+
                     @include( 'order_collection::components.product_assembly.options' )
                 </div>
           </div>
+
           @include( 'order_collection::order_summary' )
     </div>
 </div>
