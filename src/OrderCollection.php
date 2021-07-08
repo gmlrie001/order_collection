@@ -53,18 +53,10 @@ class OrderCollection
 
   public static function addCollectionToDeliveryOptions()
   {
-    $collection_options = ShippingOption::where( 'status', 'PUBLISHED' )
-                                        ->orWhere( 'status', 'SCHEDULED' )
-                                          ->where( 'status_date', '>=', now() )
-                                        ->where( 'for_collection', 'yes')
-                                        ->get();
-
-    $collection_points = static::addCollectionPointsToDelivery();
+    $collection_options = static::getAllShippingOptionsForCollection();
+    $collection_points = CollectionPoint::where( 'status', 'PUBLISHED' )->get(); // static::addCollectionPointsToDelivery();
     
-    return [
-      'options' => $collection_options,
-      'points'  => $collection_points,
-    ];
+    return [$collection_options, $collection_points];
   }
 
   public static function initializeCartCollectionCode( Basket $cart=null )
@@ -75,10 +67,18 @@ class OrderCollection
       throw new \Exception( 'Please install the Order Collection package to use this feature!' );
     }
 
-    $cart->update(['collection_code' => null]);
+    $cart->update(['collection_code' => 'OPTIONS']);
     $cart->save();
 
     return $cart;
+  }
+
+  public static function getAllShippingOptionsForCollection()
+  {
+    return ShippingOption::where( 'status', 'PUBLISHED' )
+                         ->orWhere( 'status', 'SCHEDULED' )->where( 'status_date', '>=', now() )
+                         ->where( 'for_collection', 'yes')
+                         ->get();
   }
 
   public static function setShipperAsCollection()
@@ -120,15 +120,6 @@ class OrderCollection
       $basket->save();
       $this->data['cart'] = $basket;
 
-      #update Basket shipping details from CollectionPoint Model
-      /*
-      $basket->shipping_title             = $point->shipping_title;
-      $basket->shipping_description       = $point->shipping_description;
-      $basket->shipping_time_of_arrival   = $point->shipping_time;
-      $basket->shipping_cost              = $point->shipping_cost;
-      $basket->collection_code            = $point->collection_code;
-      */
-
       $data = static::setShipperAsCollection();
       session()->put( 'shipper', $data['shipper'] );
       session()->put( 'shipperOpt', $data['shipperOpt'] );
@@ -136,5 +127,36 @@ class OrderCollection
       // redirect to shipping options
       return redirect()->to( url( 'cart/delivery/option' ) )->withInput();
   }
+
+  public function setBasketDeliveryAsCollection( Basket $basket, CollectionPoint $point=null, Request $request=null )
+  {
+    if ( is_null( $point ) || is_null( $request ) ) return;
+
+    if ( ! get_class( $point ) instanceof CollectionPoint ) {
+      throw new \Exception( 'Input "point" must be an instance of CollectionPoint.' );
+    }
+
+    $attributes = ['shipping_title', 'shipping_description', 'shipping_time_of_arrival', 'shipping_cost', 'collection_code'];
+    $updateArray = [];
+
+    # Update Basket shipping details from CollectionPoint Model
+    foreach( $attributes as $attribute ) {
+      if ( property_exists( $basket, $attribute ) && property_exists( $point, $attribute ) ) {
+        $updateArray[$attribute] = $point->{$attribute};
+      }
+    }
+
+    // $basket->shipping_title             = $point->shipping_title;
+    // $basket->shipping_description       = $point->shipping_description;
+    // $basket->shipping_time_of_arrival   = $point->shipping_time;
+    // $basket->shipping_cost              = $point->shipping_cost;
+    // $basket->collection_code            = $point->collection_code;
+
+    try {
+      $basket->update( $updateArray );
+    } catch ( \Exception $error ) {}
+
+      return $basket;
+    }
 
 }

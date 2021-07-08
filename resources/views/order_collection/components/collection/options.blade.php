@@ -4,7 +4,6 @@
       $colOpts = $collection_points;
       $counter = 0;
       $pointsOfCollection = $collection_points->groupBy( 'province' );
-      dd( __FILE__, __LINE__, get_defined_vars() );
     @endphp
 
     @forelse($pointsOfCollection as $key=>$collection_points )
@@ -17,22 +16,32 @@
             <div class="row my-lg-2 my-3">
 
               <div class="col-auto col-lg-1 mt-1 mt-lg-0 pr-0 pr-lg-3">
+                @php
+                  $address  = ( isset( $option->address_line_1 ) ) ? $option->address_line_1.', ' : ''; 
+                  $address .= ( isset( $option->address_line_2 ) ) ? $option->address_line_2.', ' : '';
+                  $address .= ( isset( $option->suburb ) ) ? $option->suburb.', ' : '';
+                  $address .= ( isset( $option->city ) ) ? $option->city.', ' : ''; 
+                  $address .= ( isset( $option->province ) ) ? $option->province.', ' : '';
+                  $address .= ( isset( $option->country ) ) ? $option->country.', ' : '';
+                  $address .= ( isset( $option->postal_code ) ) ? $option->postal_code : '';
+                @endphp
+
                 <input id="option_{{ $counter }}"
                     data-description="{{ $option->shipping_description }}"
-                    data-arrival="{{$option->shipping_time }}"
+                    data-arrival="{{ $option->shipping_time }}"
                     data-title="{{ $option->shipping_title ?? $option->title }}"
-                    data-collection_code="{{$option->collection_code }}" 
-                    data-address="@isset( $option->address_line_1 ){{ $option->address_line_1 }},@endisset @isset( $option->address_line_2 ){{ $option->address_line_2 }},@endisset {{ $option->suburb }}, {{ $option->city }}, {{ $option->province }}, {{ $option->country }}, {{ $option->postal_code }}"
+                    data-collection_code="{{ $option->collection_code }}" 
+                    data-address="{{ $address }}"
                     type="radio" 
                     name="option"
                     value="{{ number_format( $option->shipping_cost, 2, ".", "" ) }}"
-                    required 
+                  required 
                 >
                 <label for="option_{{ $counter }}"></label>
               </div>
 
               <div class="col col-lg-2 strong mt-1 mt-lg-0 pl-lg-3 pl-3">
-                {{ $option->shipping_title }}
+                {{ $option->shipping_title ?? $option->title }}
               </div>
               <div class="col-12 col-lg-4 mt-1 mt-lg-0">
                 {{ $option->shipping_description }}
@@ -79,7 +88,7 @@
                     <section class="col-12 col-lg-7 mt-3 mt-lg-0 trading-hours">
                       <h4>Trading/Opening Hours</h4>
                       @isset( $option->trading_hours )
-                      {!! $option->trading_hours !!}
+                        {!! $option->trading_hours !!}
                       @endisset
                     </section>
 
@@ -90,6 +99,7 @@
                       @endisset
                     </div>
                     @endisset
+
                   </div>
                 </details>
 
@@ -106,3 +116,11 @@
     @endforelse
 
 @endisset
+
+@php
+foreach( ['collection_id', 'address_id', 'shipper', 'shipperOpt'] as $collection_property ) {
+  if ( session()->has( $collection_property ) ) {
+    session()->forget( $collection_property );
+  }
+}
+@endphp

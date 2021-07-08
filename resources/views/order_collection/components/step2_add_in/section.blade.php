@@ -10,7 +10,7 @@
 
     <div class="option-hide-me collect-option">
         <div class="col-12 p-0 user-addresses colection-addresses">
-            <div class="col-12 p-0 address-info" data-addressid="0">
+            <div class="col-12 p-0 address-info" data-addressid="1">
                 <h1 class="d-flex flex-row align-items-center d-lg-block">
                     <strong class="font-weight-regular mr-auto">Collect from a Collect Point (options on next step)</strong>
                     <i class="fa fa-circle" aria-hidden="true"></i>
@@ -123,7 +123,7 @@
               <form action="/cart/collection" method="post" class="col-12 col-md-4 float-right p-0 mt-5 mt-lg-0">
                 {!!Form::token()!!}
                 {!!Form::hidden('cart_id', $cart_id)!!}
-                {!!Form::hidden('collection_id', '0')!!}
+                {!!Form::hidden('collection_id', '1')!!}
                 {!!Form::hidden('address_id', $billingid)!!}
                 <input class="continue-button" type="submit" value="continue">
               </form>

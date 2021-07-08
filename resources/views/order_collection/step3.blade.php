@@ -115,7 +115,6 @@
 @endpush
 
 @php 
-  $canContinue = !1;
   if ( in_array( env('APP_ENV'), ['local', 'development'] ) ) {
     session()->put( 'basket.id', 293 );
   }
@@ -162,268 +161,271 @@
     </div>
 </div>
 
-@push( 'pageScripts' )
-  <script type="text/javascript" id="realtime-summary-updating">
+<script type="text/javascript" id="realtime-summary-updating">
+  window.document.addEventListener('DOMContentLoaded', function()
+  {
     // var inputElems  = document.querySelectorAll("input[data-address]");
     var inputElems  = document.querySelectorAll('[id*=option]');
     var summaryAddr = document.querySelector('address.order-summary');
     var inputSubmit = document.querySelector('input[type*=submit][disabled]')
 
-    window.document.addEventListener('DOMContentLoaded', function()
+    try {
+      inputElems.forEach( elem => inputListeners( elem ) );
+      console.log( inputElems );
+    } catch( err ) { console.warn( "\n" + err + "\n" ); }
+
+    return;
+  });
+
+  function inputListeners( elem )
+  {
+    elem.addEventListener( 'change', function( evt )
     {
-      try {
-        inputElems.forEach( elem => inputListeners( elem ) );
-      } catch( err ) { console.warn( "\n" + err + "\n" ); }
+      var detailPrnt, tempElemSel, detailElm;
+      var address, splitAddr, summaryAddress, pElem, paraAddress;
 
-      return;
-    });
+      console.log( this );
+      console.log( 'Event: CHANGE!' );
+      console.log( evt );
 
-    function inputListeners( elem )
-    {
-      elem.addEventListener( 'change', function( evt )
-      {
-        var detailPrnt, tempElemSel, detailElm;
-        var address, splitAddr, summaryAddress, pElem, paraAddress;
+      if ( this.dataset.collection_code && typeof this.dataset.collection_code  != undefined ) {
+        try {
+          detailPrnt  = this.parentNode.closest( '.row' );
+          tempElemSel = detailPrnt.lastElementChild;
+          detailElm   = tempElemSel.querySelector( 'details' );
 
-        if ( this.dataset.collection_code && typeof this.dataset.collection_code  != undefined ) {
-          try {
-            detailPrnt  = this.parentNode.closest( '.row' );
-            tempElemSel = detailPrnt.lastElementChild;
-            detailElm   = tempElemSel.querySelector( 'details' );
-
-            if ( typeof detailElm == undefined || detailElm == null ) {
-              if( ! detailElm.hasAttribute( 'open' ) ) { detailElm.setAttribute( 'open', '' ); }
-              delete( detailElm, detailPrnt, tempElemSel );
-            }
-          } catch( err ) { console.warn( "\n" + err + "\n" ); }
-
-          try {
-            address        = this.dataset.address;
-            splitAddr      = address.split( ", " );
-            summaryAddress = splitAddr.join( ', \r\n' );
-          } catch( err ) { console.warn( "\n" + err + "\n" ); }
-
-          try {
-              pElem = document.createElement( 'p' );
-              pElem.innerText = decodeURIComponent( summaryAddress );
-              paraAddress = document.createElement( 'address' );
-              paraAddress.appendChild( pElem );
-          } catch( err ) { console.warn( "\n" + err + "\n" ); }
-
-          if ( summaryAddr.children.length > 0 ) {
-            try {
-              summaryAddr.replaceChild( paraAddress, summaryAddr.firstElementChild  );
-            } catch( err ) { console.error( "\n" + err + "\n" ); }
-
-          } else {
-            summaryAddr.appendChild( paraAddress );
+          if ( typeof detailElm == undefined || detailElm == null ) {
+            if( ! detailElm.hasAttribute( 'open' ) ) { detailElm.setAttribute( 'open', '' ); }
+            delete( detailElm, detailPrnt, tempElemSel );
           }
-        }
+        } catch( err ) { console.warn( "\n" + err + "\n" ); }
 
         try {
-          inputSubmit.removeAttribute('disabled');
-        } catch( err ) { console.log( "\r\n" + err + "\r\n" ); }
+          address        = this.dataset.address;
+          splitAddr      = address.split( ", " );
+          summaryAddress = splitAddr.join( ', \r\n' );
+        } catch( err ) { console.warn( "\n" + err + "\n" ); }
 
-        return;
+        try {
+            pElem = document.createElement( 'p' );
+            pElem.innerText = decodeURIComponent( summaryAddress );
+            paraAddress = document.createElement( 'address' );
+            paraAddress.appendChild( pElem );
+        } catch( err ) { console.warn( "\n" + err + "\n" ); }
 
-      }, false );
-    }
-  </script>
+        if ( summaryAddr.children.length > 0 ) {
+          try {
+            summaryAddr.replaceChild( paraAddress, summaryAddr.firstElementChild  );
+          } catch( err ) { console.error( "\n" + err + "\n" ); }
 
-  <script id="html5-details-accordion-emulate">
-    if ( window.document.addEventListener ) {
-      window.document.addEventListener( 
-        'DOMContentLoaded', 
-        accordion_one_open, 
-        false 
-      );
-    } else {
-      window.document.attachEvent( 
-        'onload', 
-        accordion_one_open
-      );
-    }
-
-    function accordion_one_open()
-    {
-      let details = document.querySelectorAll( 'details:not(.mt-lg-2)' );
-
-      details.forEach( d => { 
-        d.addEventListener( 'click', function( evt ) { 
-
-          evt.stopPropagation();
-          parent_close( details, evt );
-
-        }, false )
-      });
-    }
-
-    function parent_close( el, ev=null )
-    {
-      var details, ncnt, i, ctgt;
-
-      i = 0;
-      ctgt = 'regional-collection-points';
-      details = el;
-      evt = ev.srcElement;
-      ncnt = details.length - 1;
+        } else {
+          summaryAddr.appendChild( paraAddress );
+        }
+      }
 
       try {
-        for( i; i <= ncnt; i++ ) {
-
-          if (evt.parentNode != details[i] && (evt.classList.length <= 0 && ! details[i].parentNode.classList.contains(ctgt))) {
-            continue;
-          }
-
-          details[i].removeAttribute( 'open' );
-        }
-
-      } catch( error ) { console.warn( "\n" + error + "\n" ) }
+        inputSubmit.removeAttribute('disabled');
+      } catch( err ) { console.log( "\r\n" + err + "\r\n" ); }
 
       return;
-    }
-    </script>
 
-    <script id="accordion-animation">
-    class Accordion
-    {
+    }, false );
+  }
+</script>
 
-      constructor(el)
-      {
-        this.el = el;
-        this.summary = el.querySelector('summary');
-        this.content = el.querySelector('.content');
-        this.animation = null;
-        this.isClosing = false;
-        this.isExpanding = false;
-        this.summary.addEventListener('click', (e) => this.onClick(e));
-      }
+<script id="html5-details-accordion-emulate">
+  if ( window.document.addEventListener ) {
+    window.document.addEventListener( 
+      'DOMContentLoaded', 
+      accordion_one_open, 
+      false 
+    );
+  } else {
+    window.document.attachEvent( 
+      'onload', 
+      accordion_one_open
+    );
+  }
 
-      // Function called when user clicks on the summary
-      onClick(e)
-      {
-        e.preventDefault();
-        this.el.style.overflow = 'hidden';
+  function accordion_one_open()
+  {
+    let details = document.querySelectorAll( 'details:not(.mt-lg-2)' );
 
-        if (this.isClosing || !this.el.open) {
-          this.open();
+    details.forEach( d => { 
+      d.addEventListener( 'click', function( evt ) { 
 
-        } else if (this.isExpanding || this.el.open) {
-          this.shrink();
-        }
-      }
+        evt.stopPropagation();
+        parent_close( details, evt );
 
-      // Function called to close the content with an animation
-      shrink()
-      {
-        this.isClosing = true;
-        const startHeight = `${this.el.offsetHeight}px`;
-        const endHeight = `${this.summary.offsetHeight}px`;
+      }, false )
+    });
+  }
 
-        if (this.animation) {
-          this.animation.cancel();
-        }
+  function parent_close( el, ev=null )
+  {
+    var details, ncnt, i, ctgt;
 
-        this.animation = this.el.animate({
-          height: [startHeight, endHeight]
-        }, {
-          duration: 400,
-          easing: 'ease-out'
-        });
-
-        this.animation.onfinish = () => this.onAnimationFinish(false);
-        this.animation.oncancel = () => this.isClosing = false;
-      }
-
-      // Function called to open the element after click
-      open()
-      {
-        this.el.style.height = `${this.el.offsetHeight}px`;
-        this.el.open = true;
-
-        window.requestAnimationFrame(() => this.expand());
-      }
-
-      // Function called to expand the content with an animation
-      expand()
-      {
-        this.isExpanding = true;
-        const startHeight = `${this.el.offsetHeight}px`;
-        const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
-
-        if (this.animation) {
-          this.animation.cancel();
-        }
-
-        this.animation = this.el.animate({
-          height: [startHeight, endHeight]
-        }, {
-          duration: 400,
-          easing: 'ease-out'
-        });
-
-        this.animation.onfinish = () => this.onAnimationFinish(true);
-        this.animation.oncancel = () => this.isExpanding = false;
-      }
-
-      // Callback when the shrink or expand animations are done
-      onAnimationFinish(open)
-      {
-        this.el.open = open;
-        this.animation = null;
-        this.isClosing = false;
-        this.isExpanding = false;
-        this.el.style.height = this.el.style.overflow = '';
-      }
-    }
+    i = 0;
+    ctgt = 'regional-collection-points';
+    details = el;
+    evt = ev.srcElement;
+    ncnt = details.length - 1;
 
     try {
-      document.querySelectorAll( 'details details' )
-              .forEach(( el ) => { new Accordion( el ) });
+      for( i; i <= ncnt; i++ ) {
 
-    } catch( error ) { console.warn( "\n" + error + "\n" ); }
+        if (evt.parentNode != details[i] && (evt.classList.length <= 0 && ! details[i].parentNode.classList.contains(ctgt))) {
+          continue;
+        }
+
+        details[i].removeAttribute( 'open' );
+      }
+
+    } catch( error ) { console.warn( "\n" + error + "\n" ) }
+
+    return;
+  }
   </script>
 
-  @php
-    $colOpts = ( new \App\Models\CollectionPoint )
-      ->where('status', 'PUBLISHED')->orWhere('status', 'SCHEDULED')
-      ->where('status_date', '>=', now())
-    ->get();
-  @endphp
+  <script id="accordion-animation">
+  class Accordion
+  {
 
-  @if( NULL != $colOpts && count( $colOpts ) > 0 )
-    {{-- // Initialize and add the map --}}
-    <script id="store-gmaps">
-      function initMap()
-      {
-        @forelse( $colOpts as $key=>$store )
-          @if( NULL != $store->latitude && NULL != $store->longitude )
+    constructor(el)
+    {
+      this.el = el;
+      this.summary = el.querySelector('summary');
+      this.content = el.querySelector('.content');
+      this.animation = null;
+      this.isClosing = false;
+      this.isExpanding = false;
+      this.summary.addEventListener('click', (e) => this.onClick(e));
+    }
 
-            var uluru = {
-              lat: {{ $store->latitude }}, 
-              lng: {{ $store->longitude }}
-            };
+    // Function called when user clicks on the summary
+    onClick(e)
+    {
+      e.preventDefault();
+      this.el.style.overflow = 'hidden';
 
-            var map = new google.maps.Map(
-              document.getElementById( 'map_{{ $store->id }}' ), 
-              {
-                zoom: 16, 
-                center: uluru 
-              }
-            );
+      if (this.isClosing || !this.el.open) {
+        this.open();
 
-            var marker = new google.maps.Marker({
-              position: uluru, 
-              map: map
-            });
-
-          @endif
-        @empty
-        @endforelse
+      } else if (this.isExpanding || this.el.open) {
+        this.shrink();
       }
-    </script>
-  @endif
-@endpush
+    }
+
+    // Function called to close the content with an animation
+    shrink()
+    {
+      this.isClosing = true;
+      const startHeight = `${this.el.offsetHeight}px`;
+      const endHeight = `${this.summary.offsetHeight}px`;
+
+      if (this.animation) {
+        this.animation.cancel();
+      }
+
+      this.animation = this.el.animate({
+        height: [startHeight, endHeight]
+      }, {
+        duration: 400,
+        easing: 'ease-out'
+      });
+
+      this.animation.onfinish = () => this.onAnimationFinish(false);
+      this.animation.oncancel = () => this.isClosing = false;
+    }
+
+    // Function called to open the element after click
+    open()
+    {
+      this.el.style.height = `${this.el.offsetHeight}px`;
+      this.el.open = true;
+
+      window.requestAnimationFrame(() => this.expand());
+    }
+
+    // Function called to expand the content with an animation
+    expand()
+    {
+      this.isExpanding = true;
+      const startHeight = `${this.el.offsetHeight}px`;
+      const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
+
+      if (this.animation) {
+        this.animation.cancel();
+      }
+
+      this.animation = this.el.animate({
+        height: [startHeight, endHeight]
+      }, {
+        duration: 400,
+        easing: 'ease-out'
+      });
+
+      this.animation.onfinish = () => this.onAnimationFinish(true);
+      this.animation.oncancel = () => this.isExpanding = false;
+    }
+
+    // Callback when the shrink or expand animations are done
+    onAnimationFinish(open)
+    {
+      this.el.open = open;
+      this.animation = null;
+      this.isClosing = false;
+      this.isExpanding = false;
+      this.el.style.height = this.el.style.overflow = '';
+    }
+  }
+
+  try {
+    document.querySelectorAll( 'details details' )
+            .forEach(( el ) => { new Accordion( el ) });
+
+  } catch( error ) { console.warn( "\n" + error + "\n" ); }
+</script>
+
+@php
+  $colOpts = ( new \App\Models\CollectionPoint )
+    ->where('status', 'PUBLISHED')->orWhere('status', 'SCHEDULED')
+    ->where('status_date', '>=', now())
+  ->get();
+@endphp
+
+@if( NULL != $colOpts && count( $colOpts ) > 0 )
+  {{-- // Initialize and add the map --}}
+  <script id="store-gmaps">
+    function initMap()
+    {
+      @forelse( $colOpts as $key=>$store )
+        @if( NULL != $store->latitude && NULL != $store->longitude )
+
+          var uluru = {
+            lat: {{ $store->latitude }}, 
+            lng: {{ $store->longitude }}
+          };
+
+          var map = new google.maps.Map(
+            document.getElementById( 'map_{{ $store->id }}' ), 
+            {
+              zoom: 16, 
+              center: uluru 
+            }
+          );
+
+          var marker = new google.maps.Marker({
+            position: uluru, 
+            map: map
+          });
+
+        @endif
+      @empty
+      @endforelse
+    }
+  </script>
+@endif
 
 {{-- @include( 'includes.pages.tab_open_check' ) --}}
 

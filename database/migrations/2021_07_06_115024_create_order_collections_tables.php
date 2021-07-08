@@ -16,7 +16,9 @@ class CreateOrderCollectionsTables extends Migration
     if ( ! Schema::hasTable( 'collection_points' ) ) {
       Schema::create( 'collection_points', function ( Blueprint $table ) {
         $table->increments( 'id' );
+
         $table->string( 'title' );
+        $table->string( 'shipping_title' )->nullable();
         $table->longText( 'shipping_description' )->nullable();
 
         $table->text( 'address_line_1' )->nullable();
@@ -43,16 +45,36 @@ class CreateOrderCollectionsTables extends Migration
               ->default('PUBLISHED')->nullable();
         $table->dateTime( 'status_date' )->nullable();
 
-        $table->bigInteger( 'order' )->default(1)->nullable();
+        $table->bigInteger('order')->default(1)->nullable();
       });
     }
 
-    $n = count( config('order_collection.collection_point_seeder') );
-    for ( $i = 0; $i < $n; $i++ ) {
+    /** Seeding table */
+    $insertionArray = [];
+    $n = count( config( 'order_collection.collection_point_seeder' ) ) - 1;
+
+    foreach( range( 0, $n ) as $i ) {
       \DB::table( 'collection_points' )->insert([
-        $i => config('order_collection.collection_point_seeder')[$i],
+        $i => config( 'order_collection.collection_point_seeder' )[$i], 
       ]);
+      // $insertionArray[$i] = config( 'order_collection.collection_point_seeder' )[$i];
     }
+
+  /*
+    // \DB::beginTransaction();
+    try {
+      // \DB::table( 'collection_points' )->insert( $insertionArray );
+      // \DB::commit();
+      ( new \App\Models\CollectionPoint )->insert( $insertionArray );
+      dump( ( new \App\Models\CollectionPoint )->get() );
+
+    } catch ( \Exception $error ) {
+      info( $error->getMessage() );
+      // \DB::rollBack();
+    }
+    // \DB::commit();
+    // dd( $insertionArray, ( new \App\Models\CollectionPoint ), \DB::table( 'collection_points' )->select( '*' ) );
+  */
   }
 
   /**
@@ -63,8 +85,9 @@ class CreateOrderCollectionsTables extends Migration
   public function down()
   {
     if ( Schema::hasTable( 'collection_points' ) ) {
-      \DB::table( 'collection_points' )->truncate();
-      Schema::dropIfExists('collection_points');
+      // \DB::table( 'collection_points' )->truncate();
+
+      Schema::dropIfExists( 'collection_points' );
     }
   }
 

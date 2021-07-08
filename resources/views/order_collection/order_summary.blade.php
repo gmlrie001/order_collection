@@ -1,3 +1,5 @@
+@php $canContinue = false; @endphp
+
 <div class="col-12 col-lg-3 custom-checkout-padding">
     <div class="row">
         <div class="col-12 payment-order-summary pre-payment">
@@ -76,44 +78,46 @@
           @endif
           
             <h4>Shipping / Collection Info:</h4>
-          @if( NULL != $order->collection_code && $order->collection_code != '' )
+          @if ( strtolower( $shipper ) === 'collection ' || ( NULL != $order->collection_code && $order->collection_code != '' ) )
             <p>
               <u>Decollect Selected</u>
             </p>
             <address class="order-summary"></address>
 
           @else
-            <address class="order-summary">
-              <p>
-              @if( $order->delivery_address_line_1 != NULL || $order->delivery_address_line_1 != "" )
-                {{$order->delivery_address_line_1}}, <br>
-              @endif
+            @if ( request()->is( 'cart/payment' ) )
+              <address class="order-summary">
+                <p>
+                @if( $order->delivery_address_line_1 != NULL || $order->delivery_address_line_1 != "" )
+                  {{$order->delivery_address_line_1}}, <br>
+                @endif
 
-              @if($order->delivery_address_line_2 != "" || $order->delivery_address_line_2 != NULL)
-                {{$order->delivery_address_line_2}}, <br>
-              @endif
+                @if($order->delivery_address_line_2 != "" || $order->delivery_address_line_2 != NULL)
+                  {{$order->delivery_address_line_2}}, <br>
+                @endif
 
-              @if($order->delivery_suburb != "" || $order->delivery_suburb != NULL)
-                {{$order->delivery_suburb}}, <br>
-              @endif
+                @if($order->delivery_suburb != "" || $order->delivery_suburb != NULL)
+                  {{$order->delivery_suburb}}, <br>
+                @endif
 
-              @if($order->delivery_city != "" || $order->delivery_city != NULL)
-                {{$order->delivery_city}}, <br>
-              @endif
+                @if($order->delivery_city != "" || $order->delivery_city != NULL)
+                  {{$order->delivery_city}}, <br>
+                @endif
 
-              @if($order->delivery_postal_code != "" || $order->delivery_postal_code != NULL)
-                {{$order->delivery_postal_code}}, <br>
-              @endif
+                @if($order->delivery_postal_code != "" || $order->delivery_postal_code != NULL)
+                  {{$order->delivery_postal_code}}, <br>
+                @endif
 
-              @if($order->delivery_province != "" || $order->delivery_province != NULL)
-                {{$order->delivery_province}}, <br>
-              @endif
+                @if($order->delivery_province != "" || $order->delivery_province != NULL)
+                  {{$order->delivery_province}}, <br>
+                @endif
 
-              @if($order->delivery_country != "" || $order->delivery_country != NULL)
-                {{$order->delivery_country}}
-              @endif
-              </p>
-            </address>
+                @if($order->delivery_country != "" || $order->delivery_country != NULL)
+                  {{$order->delivery_country}}
+                @endif
+                </p>
+              </address>
+            @endif
           @endif
         </div>
 

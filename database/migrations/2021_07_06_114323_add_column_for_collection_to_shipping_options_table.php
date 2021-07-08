@@ -15,10 +15,8 @@ class AddColumnForCollectionToShippingOptionsTable extends Migration
   {
     if ( ! Schema::hasColumn( 'shipping_options', 'for_collection' ) ) {
 
-      Schema::table( 'baskets', function (Blueprint $table) {
-        $table->enum( 'for_collection', ['no', 'yes'] )
-              ->default('no')
-              ->nullable();
+      Schema::table( 'shipping_options', function (Blueprint $table) {
+        $table->enum( 'for_collection', ['no', 'yes'] )->default('no')->nullable();
       });
 
     }
