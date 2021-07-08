@@ -38,6 +38,8 @@ class CreateOrderCollectionsTables extends Migration
         $table->decimal( 'shipping_cost', 10, 2 )
               ->default(0.00)->nullable();
 
+        // $table->bigInteger( 'basket_id' )->unSigined()->nullable();
+
         $table->timestamps();
         $table->softDeletes();
 

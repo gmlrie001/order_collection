@@ -144,7 +144,9 @@
                                         {{-- DELIVERY/COURIER OPTS::: --}}
                                         @elseif($order->collection_code != null)
                                         {{-- COLLECTION POINTS::: --}}
-                                          @include( 'order_collection::components.collection.options' )
+                                          @if ( class_exists( 'OrderCollection' ) )
+                                            @includeIf( class_exists( 'Vault\OrderCollection\OrderCollection' ), 'order_collection::components.collection.options' )
+                                          @endif
                                         {{-- COLLECTION POINTS::: --}}
                                         @endif
                                     </div>
@@ -153,11 +155,11 @@
                         </div>
                     </div>
 
-                    @include( 'order_collection::components.product_assembly.options' )
+                    @includeIf( class_exists( 'Vault\OrderCollection\OrderCollection' ), 'order_collection::components.product_assembly.options' )
                 </div>
           </div>
 
-          @include( 'order_collection::order_summary' )
+          @includeIf( class_exists( 'Vault\OrderCollection\OrderCollection' ), 'order_collection::order_summary' )
     </div>
 </div>
 

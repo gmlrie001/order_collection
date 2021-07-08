@@ -17,11 +17,20 @@ class AddColumnsForCollectionToBasketsTable extends Migration
 
       Schema::table( 'baskets', function (Blueprint $table) {
         $table->string( 'collection_code', 20 )
-              ->nullable()
-              ->after( 'payment_method' );
+              ->nullable()->after( 'payment_method' );
       });
 
     }
+
+    // if ( ! Schema::hasColumn( 'baskets', 'collection_id' ) ) {
+
+    //   Schema::table( 'baskets', function (Blueprint $table) {
+    //     $table->bigInteger( 'collection_id')
+    //           ->unSigined()->default(1)->nullable()
+    //           ->after( 'collection_code' );
+    //   });
+
+    // }
   }
 
   /**
@@ -38,6 +47,14 @@ class AddColumnsForCollectionToBasketsTable extends Migration
       });
 
     }
+
+    // if ( Schema::hasColumn( 'baskets', 'collection_id' ) ) {
+
+    //   Schema::table( 'baskets', function (Blueprint $table) {
+    //     $table->dropColumn( 'collection_id' );
+    //   });
+
+    // }
   }
 
 }

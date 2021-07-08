@@ -38,7 +38,7 @@ return [
       'updated_at'           => '2020-06-27 11:56:12',
       'deleted_at'           => null,
 
-      'status'               => 'PUBLISHED',
+      'status'               => 'DRAFT',
       'status_date'          => null,
 
       'order'                => 1,

@@ -118,7 +118,7 @@ class OrderCollection
       $basket->delivery_country        = $point->country;
 
       $basket->save();
-      $this->data['cart'] = $basket;
+      $this->data['cart'] = $basket; // static::setBasketDeliveryAsCollection( $basket, $point, request() );
 
       $data = static::setShipperAsCollection();
       session()->put( 'shipper', $data['shipper'] );
@@ -128,7 +128,7 @@ class OrderCollection
       return redirect()->to( url( 'cart/delivery/option' ) )->withInput();
   }
 
-  public function setBasketDeliveryAsCollection( Basket $basket, CollectionPoint $point=null, Request $request=null )
+  public static function setBasketDeliveryAsCollection( Basket $basket, CollectionPoint $point=null, Request $request=null )
   {
     if ( is_null( $point ) || is_null( $request ) ) return;
 
@@ -146,17 +146,13 @@ class OrderCollection
       }
     }
 
-    // $basket->shipping_title             = $point->shipping_title;
-    // $basket->shipping_description       = $point->shipping_description;
-    // $basket->shipping_time_of_arrival   = $point->shipping_time;
-    // $basket->shipping_cost              = $point->shipping_cost;
-    // $basket->collection_code            = $point->collection_code;
-
     try {
       $basket->update( $updateArray );
+
     } catch ( \Exception $error ) {}
 
-      return $basket;
-    }
+    unset( $updateArray );
+    return $basket;
+  }
 
 }

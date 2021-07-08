@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Vault\OrderCollection\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +18,9 @@ class CollectionPoint extends Model
     public $parentOrder = "";
     public $parentTable = "";
     public $orderOptions = ['title', 'shipping_title', 'shipping_description', 'shipping_time', 'shipping_cost'];
-    public $relationships = [];
+    public $relationships = [
+      // 'baskets' => 'order', 
+    ];
     public $mainDropdownField = "shipping_description";
     public $imageDropdownField = "";
 
@@ -38,7 +40,8 @@ class CollectionPoint extends Model
       'shipping_cost', 
       'country',  
       'collection_code', 
-      'trading_hours'
+      'trading_hours', 
+      // 'basket_id', 
     ];
 
     public $fields = [
@@ -69,7 +72,8 @@ class CollectionPoint extends Model
         ['close_parent', 'Collection Details', ''], 
 
         ['open_row', '', ''], 
-            ['status', 'Status', 'status', '', '', '', '', 'col-xs-12 col-md-6', ''],
+          // ['basket_id', '', 'parent', '', '', '', '', 'col-xs-12 col-md-6 d-none collapse hidden', ''],
+          ['status', 'Status', 'status', '', '', '', '', 'col-xs-12 col-md-6', ''],
         ['close_row', '', ''], 
     ];
 
@@ -102,8 +106,9 @@ class CollectionPoint extends Model
      */
     public function order()
     {
-      return $this->belongsTo( App\Models\Basket::class, 'collection_code' )
-                  ->withDefault();
+      return $this->belongsTo( App\Models\Basket::class, 'collection_code' );
+                  // ->where('status', 'PUBLISHED')->orWhere('status', 'SCHEDULED')
+                  // ->where('status_date', '>=', now());
     }
 
 }

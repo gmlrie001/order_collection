@@ -9,7 +9,7 @@ class OrderCollectionServiceProvider extends ServiceProvider
 {  
     protected $defer = false;
 
-    
+
     /**
      * Bootstrap the application services.
      */
@@ -24,14 +24,18 @@ class OrderCollectionServiceProvider extends ServiceProvider
       $this->loadViewsFrom( dirname( __DIR__ ) . DIRECTORY_SEPARATOR . 'resources/views/order_collection', 'order_collection' );
       $this->loadRoutesFrom( dirname( __DIR__ ) . DIRECTORY_SEPARATOR . 'routes/web.php');
       // $this->loadRoutesFrom( dirname( __DIR__ ) . DIRECTORY_SEPARATOR . 'routes/vault.php');
+      
+      $configPath = dirname( __DIR__ ) .DIRECTORY_SEPARATOR. 'config' .DIRECTORY_SEPARATOR;
       $this->publishes([
-        dirname( __DIR__ ) .DIRECTORY_SEPARATOR. 'config/order_collection.php' => config_path( 'order_collection.php' ), 
+        $configPath. 'order_collection.php' => config_path( 'order_collection.php' ), 
       ], 'order_collection_config');
-      // dirname( __DIR__ ) .DIRECTORY_SEPARATOR. 'config/order_collection.php' => config_path( 'order_collection.php' ), 
+
+      $modelPath   = __DIR__ .DIRECTORY_SEPARATOR. 'Models' .DIRECTORY_SEPARATOR. 'Publish' .DIRECTORY_SEPARATOR;
+      $requestPath = __DIR__ .DIRECTORY_SEPARATOR. 'Http' .DIRECTORY_SEPARATOR. 'Requests' .DIRECTORY_SEPARATOR. 'Publish' .DIRECTORY_SEPARATOR. 'CollectionPoint' .DIRECTORY_SEPARATOR;
       $this->publishes([
-        __DIR__ .DIRECTORY_SEPARATOR. 'Models' .DIRECTORY_SEPARATOR. 'Publish' .DIRECTORY_SEPARATOR. 'CollectionPoint.php' => app_path('Models' .DIRECTORY_SEPARATOR. 'CollectionPoint.php'), 
-        __DIR__ .DIRECTORY_SEPARATOR. 'Requests' .DIRECTORY_SEPARATOR. 'Publish' .DIRECTORY_SEPARATOR. 'CollectionPoint' .DIRECTORY_SEPARATOR. 'CreateRequest.php' => app_path('Http' .DIRECTORY_SEPARATOR. 'Requests' .DIRECTORY_SEPARATOR. 'CollectionPoint' .DIRECTORY_SEPARATOR. 'CreateRequest.php'), 
-        __DIR__ .DIRECTORY_SEPARATOR. 'Requests' .DIRECTORY_SEPARATOR. 'Publish' .DIRECTORY_SEPARATOR. 'CollectionPoint' .DIRECTORY_SEPARATOR. 'UpdateRequest.php' => app_path('Http' .DIRECTORY_SEPARATOR. 'Requests' .DIRECTORY_SEPARATOR. 'CollectionPoint' .DIRECTORY_SEPARATOR. 'UpdateRequest.php'), 
+        $modelPath. 'CollectionPoint.php' => app_path('Models' .DIRECTORY_SEPARATOR. 'CollectionPoint.php'), 
+        $requestPath. 'CreateRequest.php' => app_path( 'Http' .DIRECTORY_SEPARATOR. 'Requests' .DIRECTORY_SEPARATOR. 'CollectionPoint' .DIRECTORY_SEPARATOR. 'CreateRequest.php' ), 
+        $requestPath. 'UpdateRequest.php' => app_path( 'Http' .DIRECTORY_SEPARATOR. 'Requests' .DIRECTORY_SEPARATOR. 'CollectionPoint' .DIRECTORY_SEPARATOR. 'UpdateRequest.php' ), 
       ], 'order_collection');
     }
 
