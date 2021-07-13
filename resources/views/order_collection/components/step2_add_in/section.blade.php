@@ -118,20 +118,20 @@
 
         <div class="col-12 float-left p-0 mt-4 add-address">
             <a href="#" class="float-left">Add address</a>
-			@php
-				$user->load( 'addresses' );
-                
-				$defaultUserAddy = $user->addresses->where( 'default_address', 1 )->first();
-				$defaultUserAddy = ( NULL == $defaultUserAddy ) ? $user_addresses->first() : $defaultUserAddy;
+	    @php
+		$user->load( 'addresses' );
+
+		$defaultUserAddy = $user->addresses->where( 'default_address', 1 )->first();
+		$defaultUserAddy = ( NULL == $defaultUserAddy ) ? $user_addresses->first() : $defaultUserAddy;
 
                 if ( sizeof($user_addresses) && NULL != $defaultUserAddy ) {
-					$shippingid = ( ! isset( $shippingid ) ) ? $defaultUserAddy->id : $shippingid;
-					$billingid  =  ( ! isset( $billingid ) ) ? $defaultUserAddy->id :  $billingid;
+		    $shippingid = ( ! isset( $shippingid ) ) ? $defaultUserAddy->id : $shippingid;
+		    $billingid  =  ( ! isset( $billingid ) ) ? $defaultUserAddy->id :  $billingid;
                 
                 } else {
-				    $billingid  =  ( ! isset( $billingid ) ) ? $billingid : 0;
+		    $billingid  =  ( ! isset( $billingid ) ) ? $billingid : 0;
                 }
-			@endphp
+	    @endphp
             @if(sizeof($user_addresses))
               <form action="/cart/collection" method="post" class="col-12 col-md-4 float-right p-0 mt-5 mt-lg-0">
                 {!!Form::token()!!}
