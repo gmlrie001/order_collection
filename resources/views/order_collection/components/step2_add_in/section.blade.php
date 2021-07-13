@@ -2,8 +2,8 @@
 
     <h1 class="delivery-option-title w-100 pt-lg-2 pt-3 mb-0" data-option="collect-option">
         <i>COLLECT:</i>
-        <span class="mt-lg-0">
-            Collect you order from our stores.
+        <span class="mt-lg-0" style="text-transform:none;">
+            Collect you order from our store.
             <!-- <img class="img-fluid" src="/assets/images/checkout/collect-icon.svg" /> -->
         </span>
     </h1>
@@ -118,7 +118,20 @@
 
         <div class="col-12 float-left p-0 mt-4 add-address">
             <a href="#" class="float-left">Add address</a>
+			@php
+				$user->load( 'addresses' );
+                
+				$defaultUserAddy = $user->addresses->where( 'default_address', 1 )->first();
+				$defaultUserAddy = ( NULL == $defaultUserAddy ) ? $user_addresses->first() : $defaultUserAddy;
 
+                if ( sizeof($user_addresses) && NULL != $defaultUserAddy ) {
+					$shippingid = ( ! isset( $shippingid ) ) ? $defaultUserAddy->id : $shippingid;
+					$billingid  =  ( ! isset( $billingid ) ) ? $defaultUserAddy->id :  $billingid;
+                
+                } else {
+				    $billingid  =  ( ! isset( $billingid ) ) ? $billingid : 0;
+                }
+			@endphp
             @if(sizeof($user_addresses))
               <form action="/cart/collection" method="post" class="col-12 col-md-4 float-right p-0 mt-5 mt-lg-0">
                 {!!Form::token()!!}
