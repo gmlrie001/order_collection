@@ -138,16 +138,15 @@
                             <form class="col-12 no-submit">
                                 <div class="row align-items-center">
                                     <div class="col-12 padding-0 shipping-options-list-options">
+                                    {{-- DELIVERY/COURIER OPTS::: --}}
                                         @if($order->collection_code == null)
-                                        {{-- DELIVERY/COURIER OPTS::: --}}
                                           @include( 'order_collection::components.shipping_courier.options' )
-                                        {{-- DELIVERY/COURIER OPTS::: --}}
+
+                                    {{-- COLLECTION POINTS::: --}}
                                         @elseif($order->collection_code != null)
-                                        {{-- COLLECTION POINTS::: --}}
                                           @if ( class_exists( 'OrderCollection' ) )
-                                            @includeIf( class_exists( 'Vault\OrderCollection\OrderCollection' ), 'order_collection::components.collection.options' )
+                                            @includeIf( class_exists( 'OrderCollection' ), 'order_collection::components.collection.options' )
                                           @endif
-                                        {{-- COLLECTION POINTS::: --}}
                                         @endif
                                     </div>
                                 </div>
@@ -429,6 +428,8 @@
   </script>
 @endif
 
-{{-- @include( 'includes.pages.tab_open_check' ) --}}
+@if ( env( 'APP_ENV' ) === 'production' )
+  @include( 'includes.pages.tab_open_check' )
+@endif
 
 @endsection
