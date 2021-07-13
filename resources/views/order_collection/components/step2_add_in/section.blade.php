@@ -1,7 +1,7 @@
-<div class="col-12 cart-addresses my-lg-4 my-3">
+<div class="col-12 cart-addresses user-address-select my-lg-4 my-3">
 
     <h1 class="delivery-option-title w-100 pt-lg-2 pt-3 mb-0" data-option="collect-option">
-        <i>COLLECT:</i>
+        <b>COLLECT:</b>
         <span class="mt-lg-0" style="text-transform:none;">
             Collect you order from our store.
             <!-- <img class="img-fluid" src="/assets/images/checkout/collect-icon.svg" /> -->
