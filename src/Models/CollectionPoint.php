@@ -86,9 +86,7 @@ class CollectionPoint extends Model
       parent::boot();
   
       static::saving( function ( $model ) {
-        if ( $model->id === 0 ) {
-          return false;
-        }
+        if ( $model->id === 1 ) { return false; }
       });
     }
   
