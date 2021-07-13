@@ -88,6 +88,10 @@ class CollectionPoint extends Model
       static::saving( function ( $model ) {
         if ( $model->id === 1 ) { return false; }
       });
+      
+      static::deleting( function ( $model ) {
+        if ( $model->id === 1 ) { return false; }
+      });
     }
   
     /**
