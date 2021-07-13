@@ -86,6 +86,13 @@ class CollectionPoint extends Model
           return false;
         }
       });
+      
+      static::deleting( function ( $model ) {
+        if ( $model->id === 1 ) {
+          return false;
+        }
+      });
+
     }
   
     /**
