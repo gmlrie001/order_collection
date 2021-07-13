@@ -1,9 +1,9 @@
 <div class="col-12 cart-addresses user-address-select my-lg-4 my-3">
 
-    <h1 class="delivery-option-title w-100 pt-lg-2 pt-3 mb-0" data-option="collect-option">
-        <b>COLLECT:</b>
+    <h1 class="delivery-option-title w-100" data-option="collect-option">
+        <b class="mr-lg-auto">ORDER COLLECTION</b>
         <span class="mt-lg-0" style="text-transform:none;">
-            Collect you order from our store.
+            Collect your order from our store/warehouse.
             <!-- <img class="img-fluid" src="/assets/images/checkout/collect-icon.svg" /> -->
         </span>
     </h1>
@@ -12,7 +12,7 @@
         <div class="col-12 p-0 user-addresses colection-addresses">
             <div class="col-12 p-0 address-info" data-addressid="1">
                 <h1 class="d-flex flex-row align-items-center d-lg-block">
-                    <strong class="font-weight-regular mr-auto">Collect from a Collect Point (options on next step)</strong>
+                    <strong class="font-weight-regular mr-auto">Collect your order from our store/warehost</strong>
                     <i class="fa fa-circle" aria-hidden="true"></i>
                 </h1>
             </div>
@@ -36,7 +36,7 @@
                     <i class="fa fa-circle" aria-hidden="true"></i>
                   @endif
 
-                    <span>Use this address</span>
+                    <span class="my-lg-0">Use this address</span>
                 </h1>
                 <div class="col-12">
                     <div class="col-12 col-md-6 float-left">
@@ -141,7 +141,6 @@
                 <input class="continue-button" type="submit" value="continue">
               </form>
             @endif
-
         </div>
     </div>
 </div>
