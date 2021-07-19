@@ -3,7 +3,7 @@
     @php
       $colOpts = $collection_points;
       $counter = 0;
-      $pointsOfCollection = $collection_points->groupBy( 'province' )->so;
+      $pointsOfCollection = $collection_points->groupBy( 'province' )->sortBy( 'order' );
     @endphp
 
     @forelse($pointsOfCollection as $key=>$collection_points )
