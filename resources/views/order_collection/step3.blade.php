@@ -24,7 +24,7 @@
       line-height: 1.25 !important;
     }
     input[type=submit] {
-      background-color: green;
+      background-color: #ff55b0 ;
       color: white;
     }
 
