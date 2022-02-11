@@ -3,7 +3,7 @@
     @php
       $colOpts = $collection_points;
       $counter = 0;
-      $pointsOfCollection = $collection_points->groupBy( 'province' )->sortBy( 'order' );
+      $pointsOfCollection = $collection_points->sortBy( 'order' );
     @endphp
 
     @forelse($pointsOfCollection as $key=>$collection_points )
@@ -38,6 +38,8 @@
                   required 
                 >
                 <label for="option_{{ $counter }}"></label>
+                
+                
               </div>
 
               <div class="col col-lg-2 strong mt-1 mt-lg-0">
