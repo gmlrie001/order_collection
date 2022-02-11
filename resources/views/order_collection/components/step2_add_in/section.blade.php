@@ -1,20 +1,22 @@
 <div class="col-12 cart-addresses user-address-select mt-lg-4 mt-3">
 
     <h1 class="delivery-option-title w-100" data-option="collect-option">
-        <b class="mr-lg-auto">ORDER COLLECTION</b>
+        <b class="mr-lg-auto text-uppercase" style="font-weight:600 !important;">Order Collection</b>
         <span class="mt-lg-0" style="text-transform:none;">
-            Collect your order from our store/warehouse.
         </span>
     </h1>
 
     <div class="option-hide-me collect-option">
-        <div class="col-12 p-0 user-addresses colection-addresses">
-            <div class="col-12 p-0 address-info" data-addressid="1">
+        <div class="col-12 p-0 user-addresses colection-addresses collection-points">
+            @forelse( $points as $key=>$point )
+            <div class="col-12 p-0 address-info collection-point" data-addressid="{{ $point->id }}">
                 <h1 class="d-flex flex-row align-items-center d-lg-block">
-                    <strong class="font-weight-regular mr-auto">Collect your order from our store or one of our warehouses</strong>
-                    <i class="fa fa-circle" aria-hidden="true"></i>
+                    <strong class="font-weight-regular mr-auto">{{ $point->shipping_description }}</strong>
+                    <i class="fa fa-check-circle active" aria-hidden="true"></i>
                 </h1>
             </div>
+            @empty
+            @endforelse
         </div>
 
         <div class="col-12 p-0 user-address-select">
@@ -115,29 +117,34 @@
 
         <div class="col-12 float-left p-0 mt-4 add-address">
             <a href="#" class="float-left">Add address</a>
-		@php
-			$user->load( 'addresses' );
+	    @php
+	    	$user->load( 'addresses' );
 
-			$defaultUserAddy = $user->addresses->where( 'default_address', 1 )->first();
-			$defaultUserAddy = ( NULL == $defaultUserAddy ) ? $user_addresses->first() : $defaultUserAddy;
+	    	$defaultUserAddy = $user->addresses->where( 'default_address', 1 )->first();
+	    	$defaultUserAddy = ( NULL == $defaultUserAddy ) ? $user_addresses->first() : $defaultUserAddy;
 
-			if ( sizeof($user_addresses) && NULL != $defaultUserAddy ) {
-				$shippingid = ( ! isset( $shippingid ) ) ? $defaultUserAddy->id : $shippingid;
-				$billingid  =  ( ! isset( $billingid ) ) ? $defaultUserAddy->id :  $billingid;
+	    	if ( sizeof($user_addresses) && NULL != $defaultUserAddy ) {
+	    	    $shippingid = ( ! isset( $shippingid ) ) ? $defaultUserAddy->id : $shippingid;
+	    	    $billingid  =  ( ! isset( $billingid ) ) ? $defaultUserAddy->id :  $billingid;
 
-			} else {
-			    $billingid  =  ( ! isset( $billingid ) ) ? $billingid : 0;
-			}
-		@endphp
-            @if(sizeof($user_addresses))
+		} else {
+		    $billingid  =  ( ! isset( $billingid ) ) ? $billingid : 0;
+		}
+	    @endphp
+
+	    @if(sizeof($user_addresses))
               <form action="/cart/collection" method="post" class="col-12 col-md-6 float-right p-0 mt-5 mt-lg-0">
                 {!!Form::token()!!}
-                {!!Form::hidden('cart_id', $cart_id)!!}
-                {!!Form::hidden('collection_id', '1')!!}
+                
+		{!!Form::hidden('cart_id', $cart_id)!!}
+                
+		{!!Form::hidden('collection_id', '1')!!}
                 {!!Form::hidden('address_id', $billingid)!!}
-                <input class="continue-button blue-background" type="submit" value="continue checkout collection">
+		
+                <input class="continue-button blue-background" type="submit" value="continue checkout">
               </form>
             @endif
+
         </div>
     </div>
 </div>

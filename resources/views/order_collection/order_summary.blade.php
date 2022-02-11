@@ -1,20 +1,35 @@
-@php $canContinue = false; @endphp
+@php
+$canContinue = false;
+
+if ($shipper != NULL   || 
+   ! empty( $shipper ) || $shipper) {
+  $shippersOriginal = $shipper;
+
+  if (array_key_exists( 'collection', $shipper )) {
+    $shipper = $shipper['collection'];
+  }
+
+} else {
+    $shipper = [];
+}
+@endphp
 
 <div class="col-12 col-lg-3 custom-checkout-padding">
     <div class="row">
         <div class="col-12 payment-order-summary pre-payment">
             <h2>Order Summary:</h2>
-
             @php
+              $cart = $order;
               $subTotal = $order->subtotal;
-              $order    = $cart;
 
               /** Any Discounts Applied to the Order */
               if($cart->discount == 0){
                 $discountTotal = 0;
+              
               } else {
                 if ( $cart->discount_type == 0 ) {
                   $discountTotal = $total_cost * ( $cart->discount * 0.01 );
+              
                 } else {
                   $discountTotal = $cart->discount;
                 }
@@ -24,6 +39,7 @@
               /** Any Coupons Used for this the Order */
               if ( $order->coupon == null ) {
                 $couponTotal = 0;
+              
               } else {
                 $couponTotal = $order->coupon_value;
               }
@@ -32,6 +48,7 @@
               /** Any Store Credit Assistance in this Order */
               if ( $order->store_credit_value == null ) {
                 $creditTotal = 0;
+              
               } else {
                 $creditTotal = $order->store_credit_value;
               }
@@ -39,6 +56,7 @@
 
               /** Any Products that Qualify for Assembly and Selected for on this Order */
               $assembly_costs = 0;
+              
               foreach ( $order->products as $product ) {
                 if ( $product->product->assembly_cost != null ) {
                   $assembly_costs += $product->assembly_cost * $product->quantity;
@@ -76,16 +94,16 @@
           @if($cart_total)
             <h4>Items in Basket: <span class="float-right">{{$cart_total}}</span></h4>
           @endif
-          
+
+          @if ( is_array( $shipper ) && NULL != $order )
             <h4>Shipping / Collection Info:</h4>
-          @if ( strtolower( $shipper ) === 'collection ' || ( NULL != $order->collection_code && $order->collection_code != '' ) )
+            @if ( {{--strtolower( $shipper ) === 'collection ' || --}} ( NULL != $order->collection_code && $order->collection_code != '' ) )
             <p>
-              <u>Decollect Selected</u>
+              <u>Order Collection/Pickup Selected</u>
             </p>
             <address class="order-summary"></address>
-
-          @else
-            @if ( request()->is( 'cart/payment' ) )
+            @else
+              @if ( request()->is( 'cart/payment' ) )
               <address class="order-summary">
                 <p>
                 @if( $order->delivery_address_line_1 != NULL || $order->delivery_address_line_1 != "" )
@@ -117,14 +135,18 @@
                 @endif
                 </p>
               </address>
+              @endif
             @endif
           @endif
         </div>
 
-        {{-- @if ( request()->is( 'cart/view' ) || request()->is( 'cart/delivery' ) )
+        {{--
+        @if ( request()->is( 'cart/view' ) || request()->is( 'cart/delivery' ) )
           @include( 'order_collection::order_discounts' )
-        @endif --}}
-        @includeIf( ( request()->is( 'cart/view' ) || request()->is( 'cart/delivery' ) ), 'order_collection::order_discounts' )
+        @endif
+        --}}
+        
+        @includeIf(request()->is( 'cart/view' ) || request()->is( 'cart/delivery' ), 'order_collection::order_discounts')
 
         <form class="col-12 p-0 shipping-option-form-results" action="/cart/payment" method="post">
             {!! Form::token() !!}
@@ -141,8 +163,24 @@
             @if(sizeof($areas) || isset($free_shipping))
               <input class="continue-button" type="submit" value="continue" name="basketDelivery" @if( ! $canContinue ) disabled @endif />
             @else
+              @php
+                $telNumber = NULL;
+                if ( \App\Models\Address::count() >= 1 ) {
+                    $telNumber = \App\Models\Address::first()->pluck('phone');
+                }
+              @endphp
               <h4>Oops! No shipping to your postal code</h4>
-              <p>Please contact us on <a rel="noopener noreferer" title="Call National Customer Care Line" href="tel:0877401800" target="_blank">tel:087 740 1800</a> <br> OR email us <a rel="noopener noreferer" class="" title="Contact us via email" href="mailto:info@decofurnsa.co.za">info@decofurnsa.co.za</a> for assistance. <br> Thank you for your patience.</p>
+              <p>
+                @if ( NULL != $telNumber )
+                Please contact us on <a rel="noopener noreferer" title="Call Us" href="tel:0877401800" target="_blank">tel:{{$site_settings}}</a> 
+                <br> 
+                OR 
+                @endif
+                Please email us at <a rel="noopener noreferer" class="" title="Contact us via email" href="mailto:{{ $site_settings->contact_email }}">{{ $site_settings->contact_email }}</a> for assistance. 
+                <br>
+                Thank you for your patience.
+                <br>
+              </p>
             @endif
         </form>
 
