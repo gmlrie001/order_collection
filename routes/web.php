@@ -1,25 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 
-// Route::get( 
-//   config( 'portfolio.frontend.listing.route' ), 
-//   config( 'portfolio.frontend.listing.namespace' ).config( 'portfolio.frontend.listing.actor').'@'.config( 'portfolio.frontend.listing.method' )
-// )->name( 
-//   config( 'portfolio.frontend.actions.listing.name' )
-// );
+/**
+ * Frontend routes for this package
+ */
 
-Route::get( '/investments/portfolio', function() {
-  $site_settings = \App\Models\Site::first();
-  $portfolio = ( new \Vault\Portfolio\Models\Portfolio )->with( 'category' )->status()->latest();
-  $category  = $portfolio->first()->category; // ->where( 'id', 1 )->first();
-  // $category->load( 'portfolios' );
-  dd( $portfolio->count(), $portfolio->first(), $category, count( $category->portfolios ) );
+Route::middleware( ['web'] )->group( function() {
 
-  return;
-})->name( 'portfolios' );
-Route::view( '/investments/portfolio', 'portfolio::listing' );
-Route::get( '/investments/portfolio', 'Vault\Portfolio\Controllers\Page\PortfolioController@index' )->name( 'portfolios' );
+  Route::post( 'cart/collection', '\Vault\OrderCollection\Http\Controllers\Page\CollectionPointController@index' );
 
-// Route::get( config( 'portfolio.frontend.specific.route' ) . '/{' . config( 'portfolio.frontend.specific.input' ) . '}', config( 'portfolio.actions.specificActor' ) )->name( config( 'portfolio.actions.specificName' ) );
-
+});
